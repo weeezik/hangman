@@ -16,33 +16,49 @@ end
 dictionary = File.new("google-10000-english-no-swears.txt", "r")
 words = dictionary.readlines
 clean_dictionary(words)
-secret_word = words.sample.chomp #outputs word that is to be used in hangman gameplay
-puts secret_word.chars.join(" ")
+secret_word_array = words.sample.chomp
+secret_word = secret_word_array.chars.join(" ")
+puts secret_word
 
-display_word_array = Array.new(secret_word.length, "_")
-puts display_word_array.join(" ")
+display_word_array = Array.new(secret_word_array.length, "_")
+display_word = display_word_array.join(" ")
 
-class Player
-  def initialize (lives = 10)
-    @lives = lives
+player_lives = 10
+letters_used = ""
+
+
+
+
+def identify_locations_of_letter(word, letter)
+  location_and_letter = word.each_char.with_index.select do |char,idx|
+    char == letter
   end
-  attr :lives
+  # location_array = location_and_letter.select {|item| item.is_a? String}
+  location_array = location_and_letter.flatten!.select {|item| item.is_a?(Integer)}
+  location_array
+end
+def replace_letters (letter, display_word, positions)
+  positions.each do |position|
+    display_word[position] = letter
+  end
+  display_word
 end
 
-player = Player.new
-puts "Player lives: #{player.lives}"
-
-letters_used = "Letters used: "
-
-#get player input here
-guessed_letter = STDIN.getch.chomp
-
-if secret_word.include?(guessed_letter)
-  #put correctly guessed letter into display word anywhere it appears
-  puts true
-else
-  #add incorrectly guessed letter to letters_used
-  letters_used << guessed_letter + " "
-  puts "Player lives: #{player.lives - 1}"
-  puts letters_used
+puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
+puts "\nGuess here..."
+until player_lives == 0 || secret_word == display_word do
+  #get player input here
+  guessed_letter = STDIN.getch.chomp
+  if secret_word.include?(guessed_letter)
+    #put correctly guessed letter into display word anywhere it appears
+    locations_of_letters = identify_locations_of_letter(secret_word, guessed_letter)
+    replace_letters(guessed_letter, display_word, locations_of_letters)
+    puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
+  else
+    #add incorrectly guessed letter to letters_used
+    letters_used << guessed_letter + " "
+    player_lives -= 1
+    puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+  end
 end
+puts "You won or lost, but the game is over. Nice."
