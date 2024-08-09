@@ -1,0 +1,2 @@
+require_relative 'correct_letter_substitution/identify_locations_of_letter'
+require_relative 'correct_letter_substitution/replace_letters'
