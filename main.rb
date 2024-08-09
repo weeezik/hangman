@@ -4,6 +4,8 @@ require 'colorize'
 require_relative 'lib/clean_dictionary'
 require_relative 'lib/generate_secret_word'
 require_relative 'lib/correct_letter_substitution'
+require_relative 'lib/determine_end_display'
+require_relative 'lib/game'
 
 dictionary = File.new("google-10000-english-no-swears.txt", "r")
 secret_word_array = generate_secret_word(dictionary)
@@ -17,18 +19,15 @@ player_lives = 10
 letters_used = ""
 
 puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
-puts "\nPress any letter to guess!"
+puts "\nPress any letter to guess! Press the enter key at any point to save the game"
 
 until player_lives == 0 || secret_word == display_word do
   guessed_letter = STDIN.getch.downcase.chomp
 
   if secret_word.include?(guessed_letter)
-    #put correctly guessed letter into display word anywhere it appears
-    locations_of_letters = identify_locations_of_letter(secret_word, guessed_letter)
-    replace_letters(guessed_letter, display_word, locations_of_letters)
+    correct_letter_substitution(secret_word, guessed_letter, display_word)
     puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
   else
-    #add incorrectly guessed letter to letters_used
     if letters_used.include?(guessed_letter)
       puts "\n#{guessed_letter} was already guessed..."
       puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
@@ -41,9 +40,4 @@ until player_lives == 0 || secret_word == display_word do
 
 end
 
-if player_lives == 0
-  puts "\nYou ran out of lives 😖😖😖😖😖\n".colorize(:red)
-  puts "The word was #{secret_word_array}\n"
-else
-  puts "\nNice job! You win! 😁😁😁\n".colorize(:green).blink
-end
+determine_end_display(player_lives, secret_word_array)
