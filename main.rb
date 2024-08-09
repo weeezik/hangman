@@ -1,4 +1,5 @@
 require 'io/console'
+require 'colorize'
 
 def clean_dictionary (dictionary)
   dictionary.each do |word|
@@ -26,9 +27,6 @@ display_word = display_word_array.join(" ")
 player_lives = 10
 letters_used = ""
 
-
-
-
 def identify_locations_of_letter(word, letter)
   location_and_letter = word.each_char.with_index.select do |char,idx|
     char == letter
@@ -44,8 +42,10 @@ def replace_letters (letter, display_word, positions)
   display_word
 end
 
+
 puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
-puts "\nGuess here..."
+puts "\nPress a letter to guess!"
+
 until player_lives == 0 || secret_word == display_word do
   #get player input here
   guessed_letter = STDIN.getch.chomp
@@ -56,9 +56,21 @@ until player_lives == 0 || secret_word == display_word do
     puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
   else
     #add incorrectly guessed letter to letters_used
-    letters_used << guessed_letter + " "
-    player_lives -= 1
-    puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+    if letters_used.include?(guessed_letter)
+      puts "\nThat letter was already guessed, try again."
+      puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+    else
+      letters_used << guessed_letter + " "
+      player_lives -= 1
+      puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+    end
   end
 end
-puts "You won or lost, but the game is over. Nice."
+
+if player_lives == 0
+  puts "\nYou ran out of lives 
+  😖😖😖😖😖\n".colorize(:red)
+  puts "The word was #{secret_word_array}\n"
+else
+  puts "\nNice job! You win! 😁😁😁\n".colorize(:green).blink
+end
