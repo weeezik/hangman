@@ -2,7 +2,6 @@ require 'io/console'
 require 'colorize'
 
 require_relative 'clean_dictionary'
-# require_relative 'determine_end_display'
 require_relative 'substitutable'
 
 class Game
@@ -39,6 +38,7 @@ class Game
 
   def display
     puts "\n#{@display_word}     Lives = #{@player_lives}    Letters used: #{@letters_used}"
+    puts "\nPress any letter to guess! Press the enter key at any point to save the game"
   end
 
   def play (player_lives, secret_word, display_word, secret_word_array)
