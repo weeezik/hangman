@@ -1,7 +1,12 @@
+require 'io/console'
+require 'colorize'
+
 require_relative 'clean_dictionary'
-dictionary = File.new("google-10000-english-no-swears.txt", "r")
+# require_relative 'determine_end_display'
+require_relative 'substitutable'
 
 class Game
+  include Substitutable
   def initialize(dictionary)
     @player_lives = 10
     @letters_used = ""
@@ -23,12 +28,38 @@ class Game
     secret_word_array
   end
 
+  def determine_end_display (lives, secret_word)
+    if lives == 0
+      puts "\nYou ran out of lives 😖😖😖😖😖".colorize(:red)
+      puts "The word was #{secret_word}\n"
+    else
+      puts "\nNice job! You win! 😁😁😁\n".colorize(:green).blink
+    end
+  end
+
   def display
-    puts "\n#{display_word}     Lives = #{player_lives}    Letters used: #{letters_used}"
+    puts "\n#{@display_word}     Lives = #{@player_lives}    Letters used: #{@letters_used}"
+  end
+
+  def play (player_lives, secret_word, display_word, secret_word_array)
+    until player_lives == 0 || secret_word == display_word do
+      guessed_letter = STDIN.getch.downcase.chomp
+
+      if secret_word.include?(guessed_letter)
+        correct_letter_substitution(secret_word, guessed_letter, display_word)
+        puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+      else
+        if letters_used.include?(guessed_letter)
+          puts "\n#{guessed_letter} was already guessed..."
+          puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+        else
+          letters_used << guessed_letter.colorize(:red) + " "
+          player_lives -= 1
+          puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+        end
+      end
+    end
+    self.determine_end_display(player_lives, secret_word_array)
   end
 
 end
-
-hangman = Game.new(dictionary)
-
-p hangman.secret_word
