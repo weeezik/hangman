@@ -1,5 +1,6 @@
 require 'io/console'
 require 'colorize'
+require 'json'
 
 require_relative 'clean_dictionary'
 require_relative 'substitutable'
@@ -44,7 +45,10 @@ class Game
   def play (player_lives, secret_word, display_word, secret_word_array)
     until player_lives == 0 || secret_word == display_word do
       guessed_letter = STDIN.getch.downcase.chomp
-
+      if guessed_letter == "1"
+        self.save_game
+        #save game and exit script
+      end
       if secret_word.include?(guessed_letter)
         correct_letter_substitution(secret_word, guessed_letter, display_word)
         puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
@@ -62,4 +66,36 @@ class Game
     self.determine_end_display(player_lives, secret_word_array)
   end
 
+  def to_json
+    JSON.dump ({
+      :secret_word => @secret_word,
+      :display_word => @display_word,
+      :player_lives => @player_lives,
+      :letters_used => @letters_used
+    })  
+  end
+
+  def save_game
+    Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
+    filename = "saved_games/game1save.json"
+    File.open(filename, 'w') do |file|
+      file.puts self.to_json
+    end
+  end
+
+  def self.from_json (string)
+    data = JSON.load string
+    p data
+  end
+
 end
+
+# dictionary = File.new("google-10000-english-no-swears.txt", "r")
+
+# game_object = Game.new(dictionary)
+# puts game_object.to_json
+# Game.from_json(game_object.to_json)
+
+
+
+
