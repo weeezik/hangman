@@ -38,17 +38,16 @@ class Game
     elsif secret_word == display_word
       puts "\nNice job! You win! 😁😁😁\n".colorize(:green).blink
     else
-      puts "0 or 1 has been pressed."
+      puts nil
     end
   end
 
   def display
     puts "\n#{@display_word}     Lives = #{@player_lives}    Letters used: #{@letters_used}"
-    puts "\nPress any letter to guess! Press 0 to load a saved game.
-    Press 1 at any point to save the game"
+    puts "\nPress any letter to guess!\nPress 1 at any point to save the game.\nPress 0 to load a saved game."
   end
 
-  def play (player_lives, secret_word, display_word, secret_word_array)
+  def play (player_lives, secret_word, display_word, secret_word_array, letters_used)
     until player_lives == 0 || secret_word == display_word do
       guessed_letter = STDIN.getch.downcase.chomp
       #load a saved game
@@ -56,15 +55,14 @@ class Game
         json_file = File.new('saved_games/savedgame.json','r')
         while line = json_file.gets do
           serialized_string = line
-        end        
-        #convert json file into string that contains a hash = file
+        end
         self.unserialize(serialized_string)
         break
       end
       #save game
       if guessed_letter == "1"
         self.save_game
-        #save game and exit script
+        puts "Your game has been saved."
         break
       end
       if secret_word.include?(guessed_letter)
@@ -83,19 +81,10 @@ class Game
           puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
         end
       end
+      self.determine_end_display(player_lives, secret_word, display_word)
     end
-    self.determine_end_display(player_lives, secret_word, display_word)
   end
-
-
   
-  # def self.from_json (string, game_object)
-  #   data = JSON.load string
-  #   game_object.display
-  #   game_object.play(data['player_lives'],data['secret_word'],
-  #   data['display_word'],data['secret_word_array'])
-  # end
-
 end
 
 

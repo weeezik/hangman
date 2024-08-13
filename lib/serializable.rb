@@ -20,11 +20,10 @@ module Serializable
   def unserialize (string)
     obj = @@serializer.parse string
     puts "\n#{obj["@display_word"]}     Lives = #{obj["@player_lives"]}     Letters used: #{obj["@letters_used"]}"
- 
     self.play(obj["@player_lives"], 
     obj["@secret_word"], 
     obj["@display_word"],
-    obj["@secret_word_array"])
+    obj["@secret_word_array"], obj["@letters_used"])
   end
 
 end
