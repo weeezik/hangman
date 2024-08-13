@@ -38,7 +38,7 @@ class Game
     elsif secret_word == display_word
       puts "\nNice job! You win! 😁😁😁\n".colorize(:green).blink
     else
-      puts "Game has been saved."
+      puts "0 or 1 has been pressed."
     end
   end
 
@@ -53,8 +53,13 @@ class Game
       guessed_letter = STDIN.getch.downcase.chomp
       #load a saved game
       if guessed_letter == "0"
+        json_file = File.new('saved_games/savedgame.json','r')
+        while line = json_file.gets do
+          serialized_string = line
+        end        
         #convert json file into string that contains a hash = file
-        self.unserialize(file)
+        self.unserialize(serialized_string)
+        break
       end
       #save game
       if guessed_letter == "1"
