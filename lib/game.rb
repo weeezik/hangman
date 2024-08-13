@@ -52,9 +52,10 @@ class Game
     until player_lives == 0 || secret_word == display_word do
       guessed_letter = STDIN.getch.downcase.chomp
       #load a saved game
-      # if guessed_letter == "0"
-      #   self.from_json
-      # end
+      if guessed_letter == "0"
+        #convert json file into string that contains a hash = file
+        self.unserialize(file)
+      end
       #save game
       if guessed_letter == "1"
         self.save_game
@@ -81,6 +82,8 @@ class Game
     self.determine_end_display(player_lives, secret_word, display_word)
   end
 
+
+  
   # def self.from_json (string, game_object)
   #   data = JSON.load string
   #   game_object.display

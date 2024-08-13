@@ -1,22 +1,28 @@
 module Serializable
   @@serializer = JSON
-  
-  def serialize
-    @@serializer.dump ({
-      :secret_word => @secret_word,
-      :display_word => @display_word,
-      :player_lives => @player_lives,
-      :letters_used => @letters_used,
-      :secret_word_array => @secret_word_array
-    })  
-  end
 
+  def serialize
+    obj = {}
+    instance_variables.map do |var|
+      obj[var] = instance_variable_get(var)
+    end
+    @@serializer.dump obj
+  end
+  
   def save_game
     Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
-    filename = "saved_games/savedgame#{guessed_letter}.json"
+    filename = "saved_games/savedgame.json"
     File.open(filename, 'w') do |file|
-      file.puts self.to_json
+      file.puts self.serialize
     end
+  end
+
+  def unserialize (string)
+    obj = @@serializer.parse string
+    self.play(obj["@player_lives"], 
+    obj["@secret_word"], 
+    obj["@display_word"],
+    obj["@secret_word_array"])
   end
 
 end
