@@ -52,7 +52,14 @@ class Game
       guessed_letter = STDIN.getch.downcase.chomp
       #load a saved game
       if guessed_letter == "0"
-        json_file = File.new('saved_games/savedgame.json','r')
+        # Load Game Selection
+        #   1. show user possible games to play with the current display word showing
+        #   and game number
+        #   2. allow user to select the game they would like to play
+        #   3. when game is selected identify it's file name and assign that file
+        #   to be the json_file variable
+        puts $iterator
+        json_file = File.open("saved_games/savedgame#{$iterator-1}.json",'r')
         while line = json_file.gets do
           serialized_string = line
         end
@@ -61,8 +68,8 @@ class Game
       end
       #save game
       if guessed_letter == "1"
-        self.save_game
-        puts "Your game has been saved."
+        self.save_game($iterator)
+        puts "Your game has been saved.\n"
         break
       end
       if secret_word.include?(guessed_letter)
@@ -70,7 +77,6 @@ class Game
         self.display_word = display_word
         puts "\n#{display_word}     Lives = #{player_lives.to_s.colorize(:green)}     Letters used: #{letters_used.colorize(:red)}"
       else
-        p letters_used
         if letters_used.include?(guessed_letter)
           puts "\n#{guessed_letter} was already guessed..."
           self.display_word = display_word
@@ -81,7 +87,6 @@ class Game
           self.display_word = display_word
           puts "\n#{display_word}     Lives = #{player_lives.to_s.colorize(:green)}     Letters used: #{letters_used.colorize(:red)}"
         end
-        p self.letters_used
       end
       self.determine_end_display(player_lives, secret_word, display_word)
     end

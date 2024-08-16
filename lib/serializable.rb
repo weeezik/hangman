@@ -1,6 +1,6 @@
 module Serializable
   @@serializer = JSON
-  
+
   def serialize
     JSON.dump({
       :player_lives => @player_lives,
@@ -12,9 +12,9 @@ module Serializable
     })
   end
   
-  def save_game
+  def save_game (number)
     Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
-    filename = "saved_games/savedgame.json"
+    filename = "saved_games/savedgame#{number}.json"
     File.open(filename, 'w') do |file|
       file.puts self.serialize
     end
@@ -22,7 +22,6 @@ module Serializable
 
   def unserialize (string)
     obj = @@serializer.parse string
-
     #reassign variables
     self.player_lives = obj["player_lives"]
     self.letters_used = obj["letters_used"]
@@ -30,8 +29,8 @@ module Serializable
     self.secret_word = obj["secret_word"]
     self.display_word_array = obj["display_word_array"]
     self.display_word = obj["display_word"]
-
-    puts "\n#{obj["display_word"]}     Lives = #{obj["player_lives"]}     Letters used: #{obj["letters_used"]}"
+    #run saved game
+    puts "\n#{obj["display_word"]}     Lives = #{obj["player_lives"].to_s.colorize(:green)}     Letters used: #{obj["letters_used"].colorize(:red)}"
     self.play(obj["player_lives"], 
     obj["secret_word"], 
     obj["display_word"],
