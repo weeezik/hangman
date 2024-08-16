@@ -1,13 +1,6 @@
 module Serializable
   @@serializer = JSON
-
-  # def serialize
-  #   obj = {}
-  #   instance_variables.map do |var|
-  #     obj[var] = instance_variable_get(var)
-  #   end
-  #   @@serializer.dump obj
-  # end
+  
   def serialize
     JSON.dump({
       :player_lives => @player_lives,
@@ -29,7 +22,7 @@ module Serializable
 
   def unserialize (string)
     obj = @@serializer.parse string
-    
+
     #reassign variables
     self.player_lives = obj["player_lives"]
     self.letters_used = obj["letters_used"]

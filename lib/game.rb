@@ -43,7 +43,7 @@ class Game
   end
 
   def display
-    puts "\n#{@display_word}     Lives = #{@player_lives}    Letters used: #{@letters_used}"
+    puts "\n#{@display_word}     Lives = #{@player_lives.to_s.colorize(:green)}    Letters used: #{@letters_used}"
     puts "\nPress any letter to guess!\nPress 1 at any point to save the game.\nPress 0 to load a saved game."
   end
 
@@ -68,18 +68,20 @@ class Game
       if secret_word.include?(guessed_letter)
         correct_letter_substitution(secret_word, guessed_letter, display_word)
         self.display_word = display_word
-        puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+        puts "\n#{display_word}     Lives = #{player_lives.to_s.colorize(:green)}     Letters used: #{letters_used.colorize(:red)}"
       else
+        p letters_used
         if letters_used.include?(guessed_letter)
           puts "\n#{guessed_letter} was already guessed..."
           self.display_word = display_word
-          puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+          puts "\n#{display_word}     Lives = #{player_lives.to_s.colorize(:green)}     Letters used: #{letters_used.colorize(:red)}"
         else
-          letters_used << guessed_letter.colorize(:red) + " "
+          letters_used << guessed_letter + " "
           self.player_lives = player_lives -= 1
           self.display_word = display_word
-          puts "\n#{display_word}     Lives = #{player_lives}     Letters used: #{letters_used}"
+          puts "\n#{display_word}     Lives = #{player_lives.to_s.colorize(:green)}     Letters used: #{letters_used.colorize(:red)}"
         end
+        p self.letters_used
       end
       self.determine_end_display(player_lives, secret_word, display_word)
     end
