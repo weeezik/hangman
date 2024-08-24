@@ -5,10 +5,12 @@ require 'json'
 require_relative 'clean_dictionary'
 require_relative 'substitutable'
 require_relative 'serializable'
+require_relative 'iterable'
 
 class Game
   include Substitutable
   include Serializable
+  include Iterable
 
   def initialize(dictionary)
     @player_lives = 10
@@ -58,8 +60,8 @@ class Game
         #   2. allow user to select the game they would like to play
         #   3. when game is selected identify it's file name and assign that file
         #   to be the json_file variable
-        puts $iterator
-        json_file = File.open("saved_games/savedgame#{$iterator-1}.json",'r')
+        write_iterator_file
+        json_file = File.open("saved_games/savedgame#{$iterator}.json",'r')
         while line = json_file.gets do
           serialized_string = line
         end
@@ -68,6 +70,7 @@ class Game
       end
       #save game
       if guessed_letter == "1"
+        iterate_iterator_file
         self.save_game($iterator)
         puts "Your game has been saved.\n"
         break

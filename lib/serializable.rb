@@ -21,15 +21,17 @@ module Serializable
   end
 
   def unserialize (string)
+    #Add argument to the unserialize method of a number that correlates to 
+    #which number of game the user decides they want to play
     obj = @@serializer.parse string
-    #reassign variables
+
     self.player_lives = obj["player_lives"]
     self.letters_used = obj["letters_used"]
     self.secret_word_array = obj["secret_word_array"]
     self.secret_word = obj["secret_word"]
     self.display_word_array = obj["display_word_array"]
     self.display_word = obj["display_word"]
-    #run saved game
+
     puts "\n#{obj["display_word"]}     Lives = #{obj["player_lives"].to_s.colorize(:green)}     Letters used: #{obj["letters_used"].colorize(:red)}"
     self.play(obj["player_lives"], 
     obj["secret_word"], 
